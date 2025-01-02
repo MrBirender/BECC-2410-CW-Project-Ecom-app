@@ -13,8 +13,8 @@ const Login = ({setToken}) => {
       e.preventDefault();
       const response = await axios.post(beckendUrl + '/api/user/admin', {email, password});
       if(response.data.success){
-        console.log(response)
         setToken(response.data.token)
+        localStorage.setItem('token', response.data.token)
         toast.success('Login Success')
       }else{
         toast.error(response.data.message)
