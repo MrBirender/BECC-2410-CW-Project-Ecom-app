@@ -13,7 +13,7 @@ const BestSeller = () => {
       (product) => product.bestseller == true
     );
     setBestSellers(filteredArray.slice(0,5));
-  }, []);
+  }, [products]);
   return (
     <div className="flex flex-col items-center gap-3 mt-10">
       <div className="text-center py-8 text-3xl">

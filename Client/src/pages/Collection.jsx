@@ -82,7 +82,7 @@ const Collection = () => {
 
   useEffect(() => {
     applyFilter();
-  }, [category, subCategory, search, showSearch]);
+  }, [category, subCategory, search, showSearch, products]);
 
   return (
     <div className="border-t flex flex-col sm:flex-row gap-2 sm:gap-10 pt-10">

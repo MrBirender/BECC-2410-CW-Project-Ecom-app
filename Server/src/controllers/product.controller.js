@@ -15,48 +15,56 @@ const addProduct = async (req, res) => {
       bestseller,
     } = req.body;
 
-    // receiving data from multer:
+    // Parse sizes to ensure it's an array
+    const parsedSizes = JSON.parse(sizes || "[]");
+
+    // Receiving data from multer
     const image1 = req.files.image1 && req.files.image1[0];
     const image2 = req.files.image2 && req.files.image2[0];
     const image3 = req.files.image3 && req.files.image3[0];
     const image4 = req.files.image4 && req.files.image4[0];
 
-    // creating an array of available images:
-    const images = [image1, image2, image3, image4].filter(
-      (item) => item !== undefined
-    );
+    // Creating an array of available images
+    const images = [image1, image2, image3, image4].filter(Boolean);
 
-    // upload on cloudinary:
+    // Upload images to Cloudinary
     const imagesUrl = await Promise.all(
       images.map(async (image) => {
-        let response = cloudinary.uploader.upload(image.path, {
-          resource_type: "auto",
-        });
-        return (await response).secure_url;
+        try {
+          const response = await cloudinary.uploader.upload(image.path, {
+            resource_type: "auto",
+          });
+          return response.secure_url;
+        } catch (err) {
+          console.error(`Error uploading image: ${err.message}`);
+          throw new Error("Failed to upload images");
+        }
       })
     );
-    console.log(imagesUrl);
 
-    // storing the user in the database:
+    console.log("Uploaded Image URLs:", imagesUrl);
+
+    // Create and save the new product
     const newProduct = new Product({
       name,
       description,
       price: Number(price),
       category,
       subCategory,
-      bestseller: bestseller === "true" ? true : false,
+      bestseller: bestseller === "true", // Simplified boolean conversion
       date: Date.now(),
-      sizes,
+      sizes: parsedSizes, // Save sizes as an array
       image: imagesUrl,
     });
 
-    console.log(newProduct);
+    console.log("New Product:", newProduct);
+
     await newProduct.save();
 
-    res.json({ success: true, message: "data submitted" });
+    res.json({ success: true, message: "Product added successfully" });
   } catch (error) {
-    res.json({ success: false, message: error.message });
-    console.log(error);
+    console.error("Error in addProduct:", error.message);
+    res.status(500).json({ success: false, message: error.message });
   }
 };
 

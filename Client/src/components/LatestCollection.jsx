@@ -11,7 +11,7 @@ const LatestCollection = () => {
   useEffect(() => {
     const slicedArray = products.slice(0, 10);
     setLatestProducts(slicedArray);
-  }, []);
+  }, [products]);
 
   return (
     <div className="flex flex-col items-center gap-3 my-10">

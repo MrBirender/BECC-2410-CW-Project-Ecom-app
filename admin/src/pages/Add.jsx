@@ -4,6 +4,7 @@ import { useState } from "react";
 import axios from "axios";
 import { beckendUrl } from "../App";
 import { toast } from "react-toastify";
+import { use } from "react";
 
 const Add = ({ token }) => {
   const [image1, setImage1] = useState(null);
@@ -18,6 +19,10 @@ const Add = ({ token }) => {
   const [productPrice, setProductPrice] = useState("");
   const [productSizes, setProductSizes] = useState([]);
   const [bestSeller, setBestSeller] = useState(false);
+
+  useEffect(() => {
+    console.log(productSizes);
+  }, [  productSizes]);
 
   /* SENDING FORM DATA TO API */
   const handleFormSubmit = async (e) => {
@@ -36,7 +41,7 @@ const Add = ({ token }) => {
       formData.append("category", productCategory);
       formData.append("subCategory", productSubCategory);
       formData.append("price", productPrice);
-      formData.append("sizes", productSizes);
+      formData.append("sizes", JSON.stringify(productSizes));
       formData.append("bestseller", bestSeller);
 
       /* sending data to api */
