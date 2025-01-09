@@ -1,11 +1,17 @@
-import React from 'react'
+import { useState } from "react";
+import { toast } from "react-toastify";
 
 const Order = () => {
-  return (
-    <div>
-      Order
-    </div>
-  )
-}
+  const [orders, setOrders] = useState([]);
 
-export default Order
+  const fetchOrders = async () => {
+    try {
+    } catch (error) {
+      console.log(error);
+      toast.error(error.message);
+    }
+  };
+  return <div></div>;
+};
+
+export default Order;
