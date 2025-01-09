@@ -13,7 +13,7 @@ const placeOrder = async (req, res) => {
       address,
       paymentMethod: "COD",
       payment: false,
-      date: Date.now(),
+      date: Date.now()
     };
 
     const newOrder = new Order(orderData);
@@ -35,10 +35,31 @@ const placeOrderStripe = async (req, res) => {};
 const placeOrderRazorpay = async (req, res) => {};
 
 /* show all order on admin panel */
-const allOrders = async (req, res) => {};
+const allOrders = async (req, res) => {
+  try {
+    const orders = await Order.find({});
+
+    res.json({ success: true, orders });
+    
+  } catch (error) {
+    console.log(error); 
+    res.json({ success: false, message: error.message });
+  }
+};
 
 /* show orders for user in particular */
-const userOrder = async (req, res) => {};
+const userOrder = async (req, res) => {
+  try {
+    const { userId } = req.body;
+
+    const orders = await Order.find({ userId });
+
+    res.json({ success: true, orders });
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, message: error.message });
+  }
+};
 
 /* update order status */
 const updateStatus = async (req, res) => {};

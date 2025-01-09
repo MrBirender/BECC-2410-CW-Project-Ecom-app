@@ -5,6 +5,7 @@ import { assets } from "../assets/frontend_assets/assets";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { ShopContext } from "../context/Shop/ShopContext";
+import { toast } from "react-toastify";
 
 const Placeorder = () => {
   const [method, setMethod] = useState("cod");
@@ -70,7 +71,10 @@ const Placeorder = () => {
       }
 
       console.log(orderItems);
-    } catch (error) {}
+    } catch (error) {
+      console.log(error)
+      toast.error(error.message)
+    }
   };
 
   return (
