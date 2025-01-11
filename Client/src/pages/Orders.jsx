@@ -31,7 +31,9 @@ const Orders = () => {
             item["data"] = order.date;
             orderItems.push(item);
             orderItems.reverse();
+            
           });
+          
         });
         setOrders(orderItems);
         console.log(orders);
@@ -63,7 +65,7 @@ const Orders = () => {
             <div className="flex items-start gap-6 text-sm">
               <img
                 className="w-16 sm:w-20"
-                src={product.image[0]}
+                src={product.image && product.image[0]}
                 alt="product"
                 key={index}
               />

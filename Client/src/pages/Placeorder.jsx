@@ -32,23 +32,37 @@ const Placeorder = () => {
     phone: "",
   });
 
-const initPay = (order) => {
-  const options = {
-    key: import.meta.env.VITE_RAZORPAY_KEY_ID,
-    amount: order.amount,
-    currency:order.currency,
-    name:'order payment',
-    description:'order payment',
-    order_id:order.id,
-    receipt:order.receipt,
-    handler: async(response) => {
-      console.log(response);
-    }
-   
-  }
-  const rzp = new window.Razorpay(options)
-  rzp.open()
-}
+  const initPay = (order) => {
+    const options = {
+      key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+      amount: order.amount,
+      currency: order.currency,
+      name: "order payment",
+      description: "order payment",
+      order_id: order.id,
+      receipt: order.receipt,
+      handler: async (response) => {
+        console.log(response);
+        try {
+          const { data } = await axios.post(
+            backendUrl + "/api/order/verifyrazorpay",
+            response,
+            { headers: { token } }
+          );
+          if (data.success) {
+            navigate("/orders");
+            setCartItems({});
+            console.log('payment success');
+          }
+        } catch (error) {
+          console.log(error);
+          toast.error(error.message);
+        }
+      },
+    };
+    const rzp = new window.Razorpay(options);
+    rzp.open();
+  };
   const handleChange = (event) => {
     const { name, value } = event.target;
     setFormData((data) => ({ ...data, [name]: value }));
@@ -112,19 +126,18 @@ const initPay = (order) => {
           }
           break;
 
-
         case "razorpay":
           const responseRazorpay = await axios.post(
             backendUrl + "/api/order/razorpay",
             orderdata,
             { headers: { token } }
           );
-         if(responseRazorpay.data.success){
-          console.log(responseRazorpay.data.order);
-          // initPay(responseRazorpay.data.order)
-         }
+          if (responseRazorpay.data.success) {
+            // console.log(responseRazorpay.data.order);
+            initPay(responseRazorpay.data.order);
+          }
 
-          break
+          break;
         default:
           break;
       }

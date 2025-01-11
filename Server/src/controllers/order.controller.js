@@ -13,7 +13,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 /* intialize razorpay */
 const razorpayInstance = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID,
-  key_secret: process.env.RAZORPAY_KEY_SECRET,
+  key_secret: process.env.RAZORPAY_SECRET_KEY,
 });
 
 /* place order for cod */
@@ -142,11 +142,11 @@ const placeOrderRazorpay = async (req, res) => {
 
     const options = {
       amount: amount * 100,
-      currency: currency.toUpperCase(),
+      currency: "INR",	
       receipt: newOrder._id.toString(),
     };
 
-    razorpayInstance.orders.create(options, (error, order) => {
+    await razorpayInstance.orders.create(options, (error, order) => {
       if (error) {
         console.error("Razorpay Error:", error); // Log Razorpay error
         return res.status(500).json({ success: false, message: error.message });
@@ -155,6 +155,26 @@ const placeOrderRazorpay = async (req, res) => {
       res.json({ success: true, order });
     });
   } catch (error) {
+    console.error("Server Error:", error); // Log server-side error
+    res.status(500).json({ success: false, message: "Internal server error" });
+  }
+};
+
+/* verify razorpay payment */
+const verifyRazorpayPayment = async (req, res) => {
+  try {
+    const { userId, razorpay_order_id } = req.body;
+
+    const orderInfo = await razorpayInstance.orders.fetch(razorpay_order_id);
+    if(orderInfo.status === "paid"){
+      await Order.findByIdAndUpdate(orderInfo.receipt, { payment: true });
+      await User.findByIdAndUpdate(userId, { cartData: {} });
+      res.json({ success: true, message: "Payment Successfull" });
+    }else{
+      res.json({ success: false, message: "Payment Failed" });
+    }
+    
+}catch (error) {
     console.error("Server Error:", error); // Log server-side error
     res.status(500).json({ success: false, message: "Internal server error" });
   }
@@ -208,4 +228,5 @@ export {
   userOrder,
   updateStatus,
   verifyStripePayment,
+  verifyRazorpayPayment
 };
