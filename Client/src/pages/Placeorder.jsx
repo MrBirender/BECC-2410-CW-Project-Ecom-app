@@ -9,8 +9,17 @@ import { toast } from "react-toastify";
 
 const Placeorder = () => {
   const [method, setMethod] = useState("cod");
-  const {backendUrl, navigate, token, cartItems, setCartItems, products, deliveryFee, getCartTotal} = useContext(ShopContext)
- 
+  const {
+    backendUrl,
+    navigate,
+    token,
+    cartItems,
+    setCartItems,
+    products,
+    deliveryFee,
+    getCartTotal,
+  } = useContext(ShopContext);
+
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -23,6 +32,23 @@ const Placeorder = () => {
     phone: "",
   });
 
+const initPay = (order) => {
+  const options = {
+    key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+    amount: order.amount,
+    currency:order.currency,
+    name:'order payment',
+    description:'order payment',
+    order_id:order.id,
+    receipt:order.receipt,
+    handler: async(response) => {
+      console.log(response);
+    }
+   
+  }
+  const rzp = new window.Razorpay(options)
+  rzp.open()
+}
   const handleChange = (event) => {
     const { name, value } = event.target;
     setFormData((data) => ({ ...data, [name]: value }));
@@ -31,18 +57,20 @@ const Placeorder = () => {
   const handleFormSubmit = async (e) => {
     try {
       e.preventDefault();
-      
+
       const orderItems = [];
 
       /* filterd products from mainstock of products and added to orderitems */
-      for(const items in cartItems){
-        for(const item in cartItems[items]){
-           const itemInfo = structuredClone(products.find((product)=> product._id === items))
-           if(itemInfo){
-            itemInfo.size = item
-            itemInfo.quantity = cartItems[items][item]
-            orderItems.push(itemInfo)
-           }
+      for (const items in cartItems) {
+        for (const item in cartItems[items]) {
+          const itemInfo = structuredClone(
+            products.find((product) => product._id === items)
+          );
+          if (itemInfo) {
+            itemInfo.size = item;
+            itemInfo.quantity = cartItems[items][item];
+            orderItems.push(itemInfo);
+          }
         }
       }
 
@@ -50,30 +78,61 @@ const Placeorder = () => {
       let orderdata = {
         items: orderItems,
         amount: getCartTotal() + deliveryFee,
-        address: formData
-      }
+        address: formData,
+      };
 
       /* adding switch cases to check the mode of payment */
       switch (method) {
-        case 'cod':
-          const response = await axios.post(backendUrl + "/api/order/place" , orderdata, {headers:{token}})
-          if(response.data.success){
+        case "cod":
+          const response = await axios.post(
+            backendUrl + "/api/order/place",
+            orderdata,
+            { headers: { token } }
+          );
+          if (response.data.success) {
             setCartItems({});
-            navigate("/orders")
-          }else{
-            toast.error(response.data.message)
+            navigate("/orders");
+          } else {
+            toast.error(response.data.message);
           }
-          
+
           break;
-      
+
+        case "stripe":
+          const responseStripe = await axios.post(
+            backendUrl + "/api/order/stripe",
+            orderdata,
+            { headers: { token } }
+          );
+          if (responseStripe.data.success) {
+            const { session_url } = responseStripe.data;
+            window.location.replace(session_url);
+          } else {
+            toast.error(responseStripe.data.message);
+          }
+          break;
+
+
+        case "razorpay":
+          const responseRazorpay = await axios.post(
+            backendUrl + "/api/order/razorpay",
+            orderdata,
+            { headers: { token } }
+          );
+         if(responseRazorpay.data.success){
+          console.log(responseRazorpay.data.order);
+          // initPay(responseRazorpay.data.order)
+         }
+
+          break
         default:
           break;
       }
 
       console.log(orderItems);
     } catch (error) {
-      console.log(error)
-      toast.error(error.message)
+      console.log(error);
+      toast.error(error.message);
     }
   };
 

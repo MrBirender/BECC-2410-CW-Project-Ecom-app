@@ -17,6 +17,7 @@ import {
 import Navbar from "./components/Navbar.jsx";
 import Footer from "./components/Footer.jsx";
 import Search from "./components/Search.jsx";
+import Verify from "./pages/verify.jsx";
 const App = () => {
   return (
     <div className='px-4 sm:px-[5vw] md:px-[7vw] lg:px-[9vw]'>
@@ -33,6 +34,7 @@ const App = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/orders" element={<Orders />} />
         <Route path="/place-order" element={<Placeorder />} />
+        <Route path="/verify" element={<Verify />}/>
       </Routes>
       <Footer/>
     </div>
