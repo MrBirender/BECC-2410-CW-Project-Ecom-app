@@ -1,17 +1,17 @@
 import express from 'express';
-import connectDB from './config/mongodb.js';
+import connectDB from './src/config/mongodb.js';
 import dotenv from 'dotenv';
-import connectCloudinary from './utils/cloudinary.js';
+import connectCloudinary from './src/utils/cloudinary.js';
 import cors from 'cors';
-import userRouter from './routes/userRoutes.js';
-import productRouter from './routes/productRoutes.js';
-import cartRouter from './routes/cartRoutes.js';
-import orderRouter from './routes/orderRoutes.js';``
+import userRouter from './src/routes/userRoutes.js';
+import productRouter from './src/routes/productRoutes.js';
+import cartRouter from './src/routes/cartRoutes.js';
+import orderRouter from './src/routes/orderRoutes.js';``
 
 dotenv.config({ path: './.env' }); // Ensure the path to .env is correct
 
 const app = express();
-const port = process.env.PORT || 8000;
+const port = process.env.PORT || 4000;
 
 // Middleware
 app.use(express.json());
