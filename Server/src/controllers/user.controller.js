@@ -1,11 +1,11 @@
 import { User } from "../models/user.model.js";
 import validator from "validator";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
-// create token usin jwt:
+// create token using jwt:
 const createToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECERET);
+  return jwt.sign({ id }, process.env.JWT_SECRET);
 };
 
 // user Login:
@@ -17,7 +17,7 @@ const loginUser = async (req, res) => {
     const user = await User.findOne({ email });
 
     if (!user) {
-      return res.json({ success: false, message: "user does not exists" });
+      return res.json({ success: false, message: "User does not exist" });
     }
 
     // matching the password
@@ -27,7 +27,7 @@ const loginUser = async (req, res) => {
       const token = createToken(user._id);
       res.json({ success: true, token });
     } else {
-      res.json({ success: false, message: "wrong password !" });
+      res.json({ success: false, message: "Wrong password!" });
     }
   } catch (error) {
     console.log(error);
@@ -95,10 +95,14 @@ const adminLogin = async (req, res) => {
       email === process.env.ADMIN_EMAIL &&
       password === process.env.ADMIN_PASSWORD
     ) {
-      const token = jwt.sign(email+password, process.env.JWT_SECERET)
-      res.json({ success: true, message: "admin Logged in succesfully", token });
+      const token = jwt.sign(email + password, process.env.JWT_SECRET);
+      res.json({
+        success: true,
+        message: "Admin logged in successfully",
+        token,
+      });
     } else {
-      res.json({ success: false, message: "invalid credentials." });
+      res.json({ success: false, message: "Invalid credentials." });
     }
   } catch (error) {
     console.log(error);
