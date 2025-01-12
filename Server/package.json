@@ -15,7 +15,7 @@
     "cloudinary": "^2.5.1",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
-    "express": "^4.21.2",
+    "express": "^4.17.1",
     "jsonwebtoken": "^9.0.2",
     "math-intrinsics": "^1.1.0",
     "mongoose": "^8.9.4",
@@ -27,6 +27,6 @@
     "validator": "^13.12.0"
   },
   "engines": {
-    "node": ">=16.x.x <23.x.x"
+     "node": "16.x"
   }
 }
