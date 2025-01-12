@@ -2,10 +2,13 @@ import { User } from "../models/user.model.js";
 import validator from "validator";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
+dotenv.config();
+
 
 // create token using jwt:
 const createToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET);
+  return jwt.sign({ id }, process.env.JWT_SECERET);
 };
 
 // user Login:
@@ -95,7 +98,7 @@ const adminLogin = async (req, res) => {
       email === process.env.ADMIN_EMAIL &&
       password === process.env.ADMIN_PASSWORD
     ) {
-      const token = jwt.sign(email + password, process.env.JWT_SECRET);
+      const token = jwt.sign(email + password, process.env.JWT_SECERET);
       res.json({
         success: true,
         message: "Admin logged in successfully",
