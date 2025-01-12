@@ -25,6 +25,12 @@ app.use('/api/user', userRouter);
 app.use('/api/product', productRouter);
 app.use('/api/cart', cartRouter);
 app.use('/api/order', orderRouter);
+app.use('/', (req, res) => {
+  res.send({
+    success: true,
+    error: false,
+    message: 'Server is running',});
+})
 
 // Connect to DB and start the server
 connectDB()
