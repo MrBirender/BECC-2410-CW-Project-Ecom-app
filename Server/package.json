@@ -5,8 +5,7 @@
   "type": "module",
   "scripts": {
     "start": "node server.js",
-    "server": "nodemon -r dotenv/config --experimental-json-modules server.js",
-    "postinstall": "npm install math-intrinsics"
+    "server": "nodemon -r dotenv/config --experimental-json-modules server.js"
   },
   "author": "Birender",
   "license": "ISC",
