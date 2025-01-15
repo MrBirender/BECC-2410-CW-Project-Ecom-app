@@ -138,7 +138,7 @@ const ShopContextProvider = ({ children }) => {
   // updating cart from the server:
   const getCartData = async (token) => {
     try {
-      const response = await axios.get(backendUrl + "/api/cart/get", {
+      const response = await axios.get(backendUrl + "/api/cart/get", {}, {
         headers: { token },
       });
       if (response.data.success) {
