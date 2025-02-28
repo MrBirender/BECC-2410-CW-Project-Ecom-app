@@ -5,7 +5,7 @@ import { Route, Routes } from "react-router-dom";
 import { List, Order, Add } from "./pages/index.js";
 import Login from "./components/Login.jsx";
 import { ToastContainer } from "react-toastify";
-/* when i  created a sperate branch for fronend then two files added in the admin autimaticaly if any erro comes refffor those. */
+
 
 export const beckendUrl = import.meta.env.VITE_BACKEND_URL;
 const App = () => {
